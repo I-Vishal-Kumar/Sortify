@@ -70,7 +70,7 @@ const App = () => {
             id="length-input"
             className="input"
             type="number"
-            placeholder="ARRAY_LENGTH"
+            placeholder="SIZE"
             min="0"
             max={MAX_LENGTH}
             onInput={handleLengthChange}
