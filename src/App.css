@@ -65,6 +65,28 @@ button:hover {
   opacity: 0;
 }
 
+/* stylling for algo selector button */
+
+select {
+  padding: 10px 5px;
+  font-size: 18px;
+  border-radius: 5px;
+  background-color: #3b3eac;
+  color: #fff;
+  text-transform: uppercase;
+  border: none;
+}
+
+option {
+  background-color: #5356be;
+  color: #fff;
+  text-align: center;
+  text-transform: uppercase;
+  border: none;
+}
+
+/* sylling ends */
+
 @keyframes title-animation {
   0% {
     transform: translateY(-50px);

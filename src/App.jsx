@@ -1,12 +1,16 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import Bar from "./components/Bar";
 import "./App.css";
+import { algoContext } from "./sortingAlgo/Algorithms";
 
 const MAX_LENGTH = 1000;
 const DEFAULT_LENGTH = 50;
 
 const App = () => {
   const [array, setArray] = useState([]);
+  const { insertionSort, bubbleSort } = useContext(algoContext);
+  const [algo, updateAlgo] = useState("bubble"); //default sorting algo = bubble sort
+  const [algoAvailable] = useState(["bubble", "insertion"]); // storing available sorting techniques update when new one gets added
 
   useEffect(() => {
     randomize(DEFAULT_LENGTH);
@@ -20,35 +24,6 @@ const App = () => {
     );
   };
 
-  const timer = (time) => {
-    return new Promise((resolve) => {
-      setTimeout(resolve, time);
-    });
-  };
-
-  const sort = async () => {
-    let tempArray = [...array];
-    for (let i = 0; i < tempArray.length - 1; i++) {
-      for (let j = i + 1; j < tempArray.length; j++) {
-        if (tempArray[i] > tempArray[j]) {
-          let t = tempArray[j];
-          tempArray[j] = tempArray[i];
-          tempArray[i] = t;
-          setArray([...tempArray]);
-          document.getElementById(`bar-${i}`).classList.add("swapping");
-          document.getElementById(`bar-${j}`).classList.add("swapping");
-          await timer((i - j) * 2);
-          document.getElementById(`bar-${i}`).classList.remove("swapping");
-          document.getElementById(`bar-${j}`).classList.remove("swapping");
-        }
-      }
-      document.getElementById(`bar-${i}`).classList.add("sorted");
-    }
-    document
-      .getElementById(`bar-${tempArray.length - 1}`)
-      .classList.add("sorted");
-  };
-
   const handleLengthChange = (e) => {
     const newLength = Number(e.target.value);
     if (newLength >= 0 && newLength <= MAX_LENGTH) {
@@ -58,6 +33,17 @@ const App = () => {
       e.target.setCustomValidity(`The maximum array length is ${MAX_LENGTH}`);
     } else {
       e.target.setCustomValidity("Length must be a positive integer");
+    }
+  };
+
+  const sort = () => {
+    switch (algo) {
+      case "bubble":
+        bubbleSort(array, setArray);
+        break;
+      case "insertion":
+        insertionSort(array, setArray);
+        break;
     }
   };
 
@@ -73,7 +59,7 @@ const App = () => {
             placeholder="SIZE"
             min="0"
             max={MAX_LENGTH}
-            onInput={handleLengthChange}
+            onChange={handleLengthChange}
           ></input>
         </div>
         <button id="sort" formAction="submit" onClick={sort}>
@@ -86,6 +72,13 @@ const App = () => {
         >
           RANDOMIZE
         </button>
+        <select onChange={(e) => updateAlgo(e.target.value)}>
+          {algoAvailable.map((algo, idx) => (
+            <option key={`algo-${idx}`} value={algo}>
+              {algo} sort
+            </option>
+          ))}
+        </select>
       </div>
       <div className="bars">
         {array.map((value, key) => (
